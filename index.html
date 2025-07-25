@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    <title>App de Tarea (MVC)</title>
+    
+    <style>
+        body{font-family: Arial, sans-serif; padding:20px;}
+        input, button { margin: 5px;}
+        ul {list-style-type: none; padding: 0;}
+        li {padding: 5px 0;}
+        table{width: 100%; border-collapse: collapse; border: 1px solid black; color:white;  text-align: center}
+        td{background-color:gray}
+        thead{background-color:#218838}
+    </style>
+</head>
+<body>
+    <h1>Lista de Tareas</h1>
+    <input type = "text" id="titulo" placeholder="Titulo de la tarea"/> 
+    <input type = "text" id="descripcion" placeholder="descripcion"/>
+    <button id="btn-agregar" >Agregar Tarea</button>
+    
+    <table id="tabla-tareas">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>titulo</th>
+                <th>description</th>
+                <th>completado</th> 
+                <th>modificar</th> 
+                <th>eliminar</i></th>
+            </tr>
+        </thead>
+        <tbody id="cuerpo-tabla-tareas">
+            <!--Aqui iran las filas-->
+        </tbody>
+    </table>
+    <script src="./index.js" type="module" ></script>
+    </body>
+</html>

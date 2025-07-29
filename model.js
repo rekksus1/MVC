@@ -28,15 +28,12 @@ export default class ModeloTareas{
        this.guardarEnstorage();
     }
 
-    modificarTarea(id,nuevoTitulo, nuevoDescripcion){ 
+    modificarTarea(id,nuevoTitulo, nuevoDescripcion,checkedNuevo){ 
           this.tareas = this.tareas.map(tarea => tarea.id === Number(id) 
-                                           ?{...tarea, titulo: nuevoTitulo, description: nuevoDescripcion}
+                                           ?{...tarea, titulo: nuevoTitulo, description: nuevoDescripcion,completado: checkedNuevo}
                                            : tarea
                                         );
           this.guardarEnstorage();
     }
-    guardarTarea(titulo,descripcion){
-        this.tareas.tarea.titulo = titulo;
-        this.tareas.tarea.descripcion = descripcion;  
-    }
+
 }

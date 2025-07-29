@@ -4,6 +4,9 @@ export default class VistaTareas{
             this.btnAgregar = document.getElementById("btn-agregar");
             this.inputTitulo = document.getElementById("titulo");
             this.inputDescription = document.getElementById("descripcion");
+            this.alerta = document.getElementById("alert");
+            this.filtro = document.getElementById("filtro-tareas");
+            this.alerta.style.display = "none"; // Ocultar alerta al inicio
         }
         inicializarEventos(callBacks) {
             this.setTarea(callBacks.alAgregar);
@@ -18,8 +21,9 @@ export default class VistaTareas{
                     callBackAgregar(titulo, description)
                     this.inputTitulo.value = ""
                     this.inputDescription.value = "";
+                    this.alerta.style.display = "none";
                 } else {
-                    alert("debes escribir titulo y description");
+                    this.mostrarAlerta("Debes ingresar titulo y descripcion")
                 }
             })
         }
@@ -43,7 +47,7 @@ export default class VistaTareas{
                 let tituloAModificar = celdaTitulo.textContent.trim();
                 let descripcionAModificar = celdaDescripcion.textContent.trim();
                 if (boton.classList.contains("btn-eliminar")) {
-                    callBacks.alEliminar && callBacks.alEliminar(id,fila);
+                    callBacks.alEliminar && callBacks.alEliminar(id);
                 }
 
                 if (boton.classList.contains("btn-modificar")) {
@@ -52,37 +56,37 @@ export default class VistaTareas{
                         icono.classList.remove("fa-pen");
                         icono.classList.add("fa-floppy-disk");
                         
-                        celdaTitulo.innerHTML = `<input type = "text" id = "inputTitulo-${id}" placeholder="titulo" value = "${tituloAModificar}" data-original="${tituloAModificar}"/>`;
-                        celdaDescripcion.innerHTML = `<input type = "text" id = "inputDescripcion-${id}" placeholder="descripcion" value = "${descripcionAModificar}" data-original="${descripcionAModificar}"/>`;
+                        celdaTitulo.innerHTML = `<input type = "text" id = "inputTitulo-${id}" placeholder="titulo" value = "${tituloAModificar}" data-original="${tituloAModificar}" size = "15"/>`;
+                        celdaDescripcion.innerHTML = `<textarea id = "inputDescripcion-${id}" placeholder="descripcion" value = "" data-original="${descripcionAModificar}" size = "15">${descripcionAModificar}</textarea>`;
+                        document.getElementById(`check-${id}`).disabled = false;
 
                     }else if (icono.classList.contains("fa-floppy-disk")) {
                         const tituloModificado = document.getElementById(`inputTitulo-${id}`);
                         const descripcionModificado = document.getElementById(`inputDescripcion-${id}`);
-                        
+                        const checkNuevo = document.getElementById(`check-${id}`).checked;
+                        console.log(document.getElementById(`check-${id}`).dataset.original);
+                        console.log(checkNuevo);
                         const tituloNuevo = tituloModificado?.value.trim();
                         const descripcionNuevo = descripcionModificado?.value.trim();
 
                         const tituloOriginal = tituloModificado.dataset.original;
                         const descripcionOriginal = descripcionModificado.dataset.original;
-
-
+                        
                         if(!tituloNuevo || !descripcionNuevo){
-                            alert("debes escribir titulo y descripcion");
+                            this.mostrarAlerta("Debes ingresar titulo y descripcion");
+                            return;
+            }
+                        if(tituloNuevo === tituloOriginal   && descripcionNuevo=== descripcionOriginal &&  checkNuevo === (document.getElementById(`check-${id}`).dataset.original === "true")) {
+                            this.mostrarAlerta("No has modificado titulo y descripcion");
                             return;
                         }
-                        if(tituloNuevo === tituloOriginal   && descripcionNuevo === descripcionOriginal) {
-                            alert("no has modificado algunos de los datos");
-                            return;
-                        }
-                        celdaTitulo.textContent = tituloNuevo;
-                        celdaDescripcion.textContent = descripcionNuevo;
-                        callBacks.alModificar && callBacks.alModificar(id,tituloNuevo,descripcionNuevo);
+                        this.alerta.style.display = "none";
+                
+                        callBacks.alModificar && callBacks.alModificar(id,tituloNuevo,descripcionNuevo,checkNuevo);
 
                         icono.classList.remove("fa-floppy-disk");
                         icono.classList.add("fa-pen");
-
-                        
-                        
+                        document.getElementById(`check-${id}`).disabled = true;             
                     }                   
                   }
 
@@ -95,14 +99,36 @@ export default class VistaTareas{
                 tr.innerHTML = `<td id = "${tarea.id}" >${tarea.id}</td>
                                 <td class = td-titulo>${tarea.titulo}</td>
                                 <td class = td-descripcion>${tarea.description}</td>
-                                <td><input type="checkbox" id="check-${tarea.id}" ></td>
+                                ${tarea.completado
+                                    ?`<td><input type="checkbox" id="check-${tarea.id}" checked disabled data-original = ${tarea.completado}></td>`
+                                    :`<td><input type="checkbox" id="check-${tarea.id}" disabled data-original = ${tarea.completado}></td>`}
                                 <td><button class = "btn-modificar" id="btn-modificar-${tarea.id}"><i class="fas fa-pen" id = "icono-${tarea.id}"></i></button></td>
                                 <td><button class = "btn-eliminar " id="btn-eliminar-${tarea.id}"><i class="fas fa-trash"></i></button></td>`
-                if(tarea.completado) {
-                    const td = document.getElementById(tarea.id);
-                    td.checked = "true";
-                }
+            
                 this.listaElemento.appendChild(tr);
+            });
+        }
+
+        mostrarAlerta(textoAlerta) {
+            
+        this.alerta.style.display = "block";
+        
+        this.alerta.innerText = textoAlerta;
+        
+        setTimeout(() => {
+            this.alerta.style.display = "none";
+            this.alerta.innerText = "";
+        }, 2000);
+        }
+
+        inicializarFiltro(onFiltar) {
+            const filtro = document.getElementById("filtro-tareas");
+            filtro.addEventListener("change", (e) => {
+                onFiltar(e.target.value);
             })
         }
     }
+
+    
+
+    

@@ -1,17 +1,35 @@
-const express = require('express');
-const hostname = '127.0.0.1';
-const port = 3000;
-const path = require('path');
-const app = express();
-const pool = require('./config.js');
+import express  from 'express';
+import pool from './config.js';
+import path from 'path';
+import ModeloTareas from '../crud/model.js';
+import { fileURLToPath } from 'url';
+
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const rutaCrud = path.join(__dirname, '..', 'crud')
 
-app.use(express.static(rutaCrud));
+const hostname = '127.0.0.1';
+const port = 3000;
+const app = express();
 
-/* app.get('/',(req,res) => {
-  res.sendFile(path.join(__dirname, 'crud', 'index.html'))
-}); */
+const modelo = new ModeloTareas();
+
+app.use(express.json());
+
+app.get('/tareas',async (req,res) => {
+  //res.sendFile(path.join(__dirname, 'crud', 'index.html'))
+  const tareas = await modelo.obtenerTareas();
+  res.json(tareas);
+}); 
+
+app.post('/tareas', async (req,res) => {
+  const { titulo, descripcion } = req.body;
+  const resultado = await modelo.agregarTarea(titulo, descripcion);
+  res.json({ insertID: resultado.insertId });
+});  
 
 app.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);

@@ -18,9 +18,8 @@ const app = express();
 const modelo = new ModeloTareas();
 
 app.use(express.json());
-
+app.use(express.static(rutaCrud))
 app.get('/tareas',async (req,res) => {
-  //res.sendFile(path.join(__dirname, 'crud', 'index.html'))
   const tareas = await modelo.obtenerTareas();
   res.json(tareas);
 }); 
